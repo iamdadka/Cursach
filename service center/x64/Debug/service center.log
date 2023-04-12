@@ -1,9 +1,0 @@
-﻿  Registration_autorizatoin.cpp
-F:\БГУИР\2 семестр\Курсач\service center\Registration_autorizatoin.cpp(22,42): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-F:\БГУИР\2 семестр\Курсач\service center\Registration_autorizatoin.cpp(52,47): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-F:\БГУИР\2 семестр\Курсач\service center\Registration_autorizatoin.cpp(41,13): warning C4101: 'aces': unreferenced local variable
-  service center.cpp
-  user functionality.cpp
-  Generating Code...
-F:\БГУИР\2 семестр\Курсач\service center\Registration_autorizatoin.cpp(64): warning C4715: 'autorization': not all control paths return a value
-  service center.vcxproj -> F:\БГУИР\2 семестр\Курсач\service center\x64\Debug\service center.exe
