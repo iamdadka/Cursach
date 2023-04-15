@@ -1,64 +1,85 @@
 
+//права администратора есть у login: 297293410
+//                            parol: 2905
+
+
 #include "Header.h"
 
 using namespace std;
 
-
-
-
-FILE* flogin;
-char a;
-void registration() {
+int registration() {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
+	int i = 0;
+	char login[30];
+	FILE* f_login_parol;
 	printf("Регистрация:\n");
-	char login[10], parol[10], tlogin[10], access[2];
-	fopen_s(&flogin, "Login_parol.txt", "a+");
-	int a = 0;
-	printf("Введите логин\n");
-	cin.getline(login, 10);
-	if (flogin!=0){
-	while (!feof(flogin)) {
-		fgets(tlogin, strlen(login) + 1, flogin);
-		if (strcmp(tlogin, login) == 0) { printf("Такой логин уже существует!\n"); a = 2; fclose(flogin); break; }
-
-	}
-	if (a == 0) {
-		fputs(login, flogin);
-		printf("Введите пароль\n");
-		cin.getline(parol, 10);
-		fputs(parol, flogin);
-		printf("Введите уровень доступа:\n1.Администратор\n2.Работник сервисного центра\n");
-		cin.getline(access, 2);
-        fputs(access, flogin);
-        fputs("\n", flogin);
-	};
-	fclose(flogin);
-	}
-};
-
-int autorization() {
-	int a = 0, aces;
-	char login[30], parol[10], tloginparol[100], acces[100];
-	printf("Авторизация:\n");
-	printf("Введите логин\n");
-	cin.getline(login, 10);
-	printf("Введите пароль\n");
-	cin.getline(parol, 10);
-	strncat_s(login, parol, 10);
-	fopen_s(&flogin, "Login_parol.txt", "a+");
-	if(flogin!=0){
-	while (!feof(flogin)) {
-		fgets(tloginparol, strlen(login) + 1, flogin);
-		if (strcmp(tloginparol, login) == 0) {
-			printf("Вы успешно вошли в аккаунт!"); a = 10;
-			cout << acces; fclose(flogin);  break;
-			
+	struct user user1;
+	fopen_s(&f_login_parol, "Login_parol.bin", "a+");
+	cout << "Введите номер телефона:\n";
+	cin >> login;
+	while (true) {
+		if (!f_login_parol) {
+			cout << "еррор" << endl;
+			return NULL;
 		}
+		fseek(f_login_parol, sizeof(user) * i, 0);
+		if (!fread(&user1, sizeof(user), 1, f_login_parol))
+			break;
+		if (strcmp(user1.login, login) == 0) {
+			cout << "Такой номер телефона уже задействован\n";
+			fclose(f_login_parol);
+			return NULL;
+		}
+		i++;
 	}
-	if (a == 0) { printf("Неверный логин или пароль"); return 0; }
-	
+	strcpy_s(user1.login, login);
+	printf("Введите пароль\n");
+	cin >> user1.parol;
+	user1.acces = 1;
+	fclose(f_login_parol);
+	fopen_s(&f_login_parol, "Login_parol.bin", "a+");
+	if (!f_login_parol) {
+		cout << "еррор" << endl;
+		return NULL;
 	}
-	
-	
+	fwrite(&user1, sizeof(user), 1, f_login_parol);
+	fclose(f_login_parol);
+}
+
+int autorization(char login[30])
+{   FILE* f_login_parol;
+    int i = 0;
+	struct user user1;
+	bool d = false;
+	char parol[10];
+	fopen_s(&f_login_parol, "Login_parol.bin", "a+");
+	while (true) {
+		if (!f_login_parol) {
+			cout << "еррор" << endl;
+			return NULL;
+		}
+		fseek(f_login_parol, sizeof(user) * i, 0);
+		if (!fread(&user1, sizeof(user), 1, f_login_parol))
+			break;
+		if (strcmp(user1.login, login) == 0) {
+			d = true;
+			break;
+		}
+		i++;
+	}
+	if (!d) {
+		cout << "Данный номер телефона не зарегистрирован\n";
+		return 0;
+	}
+	else {
+		cout << "Введите пароль:\n";
+		cin >> parol;
+		if (strcmp(user1.parol, parol) == 0) {
+			cout << "Вы успешно вошли в аккаунт!\n";
+			return user1.acces;
+		}
+		else { cout << "Неверный пароль!\n"; return NULL; }
+	}
+	fclose(f_login_parol);
 }
